@@ -1,0 +1,41 @@
+{
+	"name": "simples-redis-store",
+	"version": "0.9.0",
+	"description": "Redis session store for simpleS",
+	"keywords": [
+		"session",
+		"simples",
+		"store",
+		"redis"
+	],
+	"homepage": "https://github.com/micnic/simples-redis-store",
+	"bugs": {
+		"url": "https://github.com/micnic/simples-redis-store/issues"
+	},
+	"license": "MIT",
+	"author": {
+		"name": "Nicu Micleușanu",
+		"email": "micnic90@gmail.com",
+		"url": "https://github.com/micnic"
+	},
+	"main": "index",
+	"repository": "github:micnic/simples-redis-store",
+	"scripts": {
+		"prepublishOnly": "npm test",
+		"test": "tap test.js",
+		"test-cov-html": "npm test -- --coverage-report=html"
+	},
+	"dependencies": {
+		"redis": "2.x"
+	},
+	"devDependencies": {
+		"eslint": "6.x",
+		"tap": "14.x"
+	},
+	"peerDependencies": {
+		"simples": "0.9.x"
+	},
+	"engines": {
+		"node": ">=8.0"
+	}
+}
