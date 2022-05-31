@@ -2,46 +2,46 @@
 
 const { createClient } = require('redis');
 
+/**
+ * @typedef {import('redis').RedisClientType} RedisClientType
+ */
+
 const { parse, stringify } = JSON;
 
-const delCommand = 'del';
-const getCommand = 'get';
-const pexpireArgument = 'px';
-const pexpireCommand = 'pexpire';
-const setCommand = 'set';
-
+/**
+ * @template T
+ */
 class RedisStore {
 
 	/**
 	 * Redis store constructor
-	 * @param {RedisClient} client
+	 * @param {RedisClientType} client
 	 */
 	constructor(client = createClient()) {
+
+		// Add Redis client to the store
+		/** @type {RedisClientType} */
 		this.client = client;
+
+		// Connect the Redis client
+		client.connect();
 	}
 
 	/**
 	 * Store get method implementation
 	 * @param {string} id
-	 * @returns {Promise<*>}
+	 * @returns {Promise<T | null>}
 	 */
-	get(id) {
+	async get(id) {
 
-		return new Promise((resolve, reject) => {
+		const value = await this.client.get(id);
 
-			// Send "get" command to the database
-			this.client.sendCommand(getCommand, [id], (error, data) => {
-				if (error) {
-					reject(error);
-				} else {
-					try {
-						resolve(parse(data));
-					} catch (exception) {
-						reject(exception);
-					}
-				}
-			});
-		});
+		// Check for not found value
+		if (value === null) {
+			return null;
+		}
+
+		return parse(value);
 	}
 
 	/**
@@ -49,52 +49,23 @@ class RedisStore {
 	 * @param {string} id
 	 * @returns {Promise<void>}
 	 */
-	remove(id) {
+	async remove(id) {
 
-		return new Promise((resolve, reject) => {
-
-			// Send "del" command to the database
-			this.client.sendCommand(delCommand, [id], (error) => {
-				if (error) {
-					reject(error);
-				} else {
-					resolve();
-				}
-			});
-		});
+		// Send "del" command to the database
+		await this.client.del(id);
 	}
 
 	/**
 	 * Store set method implementation
 	 * @param {string} id
-	 * @param {Session} session
+	 * @param {T} data
 	 * @param {number} timeout
 	 * @returns {Promise<void>}
 	 */
-	set(id, session, timeout) {
+	async set(id, data, timeout) {
 
-		return new Promise((resolve, reject) => {
-
-			// Catch any error on session stringify
-			try {
-
-				// Send "set" command to the database with timeout parameter
-				this.client.sendCommand(setCommand, [
-					id,
-					stringify(session),
-					pexpireArgument,
-					timeout
-				], (error) => {
-					if (error) {
-						reject(error);
-					} else {
-						resolve();
-					}
-				});
-			} catch (error) {
-				reject(error);
-			}
-		});
+		// Send "set" command to the database
+		await this.client.set(id, stringify(data), { PX: timeout });
 	}
 
 	/**
@@ -103,19 +74,10 @@ class RedisStore {
 	 * @param {number} timeout
 	 * @returns {Promise<void>}
 	 */
-	update(id, timeout) {
+	async update(id, timeout) {
 
-		return new Promise((resolve, reject) => {
-
-			// Send "pexpire" command to the database
-			this.client.sendCommand(pexpireCommand, [id, timeout], (error) => {
-				if (error) {
-					reject(error);
-				} else {
-					resolve();
-				}
-			});
-		});
+		// Send "pExpire" command to the database
+		await this.client.pExpire(id, timeout);
 	}
 }
 

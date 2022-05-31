@@ -1,20 +1,14 @@
 [0]: https://www.npmjs.com/package/simples
 
-# simples-redis-store 0.9.0
+# simples-redis-store 0.9.1
 
-`simples-redis-store` is a session store for `simples` that is using `redis`
-database, it is designed to work with simples starting version 0.9.0.
+`simples-redis-store` is a store for `simples` that is using `redis` database,
+it is designed to work with simples starting version 0.9.0.
 
 ## Install
 
 ```
 npm i simples-redis-store
-```
-
-Or install the package together with [simples][0]:
-
-```
-npm i simples simples-redis-store
 ```
 
 ## Usage
@@ -52,4 +46,8 @@ server.session({
 });
 ```
 
-The `redis` client is always available as a property of the store to be able to.
+The `redis` client is always available as a property.
+
+```js
+store.client; // Redis client
+```

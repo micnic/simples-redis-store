@@ -1,9 +1,8 @@
 {
 	"name": "simples-redis-store",
-	"version": "0.9.0",
-	"description": "Redis session store for simpleS",
+	"version": "0.9.1",
+	"description": "Redis store for simpleS",
 	"keywords": [
-		"session",
 		"simples",
 		"store",
 		"redis"
@@ -20,20 +19,24 @@
 	},
 	"main": "index",
 	"repository": "github:micnic/simples-redis-store",
+	"files": [
+		"index.js"
+	],
 	"scripts": {
 		"prepublishOnly": "npm test",
-		"test": "tap test.js",
+		"test": "tap index.test.js",
 		"test-cov-html": "npm test -- --coverage-report=html"
 	},
 	"dependencies": {
-		"redis": "2.x"
+		"redis": "4.x"
 	},
 	"devDependencies": {
-		"eslint": "6.x",
-		"tap": "14.x"
-	},
-	"peerDependencies": {
-		"simples": "0.9.x"
+		"@types/tap": "15.x",
+		"@typescript-eslint/eslint-plugin": "5.x",
+		"@typescript-eslint/parser": "5.x",
+		"eslint": "8.x",
+		"tap": "16.x",
+		"typescript": "4.x"
 	},
 	"engines": {
 		"node": ">=8.0"
